@@ -1,0 +1,144 @@
+#greeting_and_access_agreement_div
+{
+	height: auto;
+	width: 600px;
+	font: bold 30px Verdana;
+	text-align: center;
+	border-top: 5px double black;
+	border-bottom: 5px double black;
+	padding: 10px 10px 10px 10px;
+}
+#start_button{
+	height: 100px;
+	width: 400px;
+	font-size: 50px;
+}
+
+#nickname_input{
+	width: 300px;
+	font-size: 30px;
+}
+
+#rooms_list_select{
+	width: 300px;
+	font-size: 30px;
+}
+
+#MenuContainer{
+	position: absolute;
+	left: 0px;
+	right: 0px;
+}
+#MainContainer{
+	position: absolute;
+	left: 0px;
+	right: 0px;
+}
+/*Стиль окна чата!
+*/
+#MessagingWindow{
+	width: 200px;
+	height: 500px;
+	background-color: gray;
+	opacity: 0.5;
+
+}
+/**/
+#MessagesView{
+	position: absolute;
+	top: 0%;
+	height: 60%;
+	background-color: green;
+
+	position: absolute;
+	width: 100%;
+	opacity: 0.7;
+	left: 0%;
+}
+#WritingField{
+	position: absolute;
+	height: 30%;
+	top: 60%;
+
+	position: absolute;
+	width: 97%;
+	opacity: 0.7;
+	left: 0%;
+}
+#SendMessageButton{
+	position: absolute;
+	height: 10%;
+	font-size: 30px;
+	top: 90%;
+
+	position: absolute;
+	width: 100%;
+	opacity: 0.7;
+	left: 0%;
+}
+/*Стиль отображения баннера VKID для каждого из пользователей*/
+#VKIDBanner_show{
+	width: 200px;
+	height: 60px;
+	background-color: green;
+	text-align: center;
+
+	font: 30px Verdana;
+	border: 1px solid black;
+	transition: background-color 1s width 1s;
+}
+
+#VKIDBanner_hide{
+	width: 200px;
+	height: 60px;
+	background-color: grey;
+	text-align: center;
+	font: 30px Verdana;
+	border: 1px solid black;
+	transition: background-color 1s width 1s;
+}
+
+#VKIDBanner_finding{
+	width: 200px;
+	height: 60px;
+	background-color: white;
+	text-align: center;
+	font: 30px Verdana;
+	border: 1px solid black;
+	transition: background-color 1s width 1s;
+
+}
+
+/*Стиль 3DCSS кнопки контроля показа видео пользователя!*/
+#VideoButton3DCSS{
+	width: 70px;
+	height: 50px;
+	background-color: red;
+}
+#VideoButton3DCSS:hover {
+	background-color: white;
+	transition: background-color 1s;
+}
+
+/*Стиль 3DCSS кнопки контроля показа VKID пользователя!*/
+#VKIDButton3DCSS{
+	width: 70px;
+	height: 50px;
+	background-color: blue;
+}
+#VKIDButton3DCSS:hover{
+	background-color: white;
+	transition: background-color 1s;
+}
+/*Стиль 3DCSS кнопки контроля поиска следующего собеседника!*/
+#FindNextButton3DCSS{
+	width: 70px;
+	height: 50px;
+	background-color: yellow;
+	font: 30px Verdana;
+
+}
+#FindNextButton3DCSS:hover{
+	background-color: white;
+	transition: background-color 1s;
+}
