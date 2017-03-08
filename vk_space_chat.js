@@ -314,6 +314,12 @@ _VKSpaceChat.prototype.makeCallsToAllRemoteUsers = function (stream)
 
 _VKSpaceChat.prototype.updateWorkingProcess = function ()
 {
+/*	
+	if(YouTubePlayer.getVolume() > 1)
+	{
+		YouTubePlayer.setVolume(YouTubePlayer.getVolume() - 1);
+	}
+*/
 	this.controlFlyingObjects();
 	this.LocalUser.update();
 	this.updateRemoteUsers();

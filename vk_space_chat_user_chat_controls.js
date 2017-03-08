@@ -99,9 +99,8 @@ _ChatControls.prototype.initButtons3DCSS = function ()
 	this.Controls.FindNextButton.TextContent = document.createTextNode("Next");
 	this.Controls.FindNextButton.ObjHTML.appendChild(this.Controls.FindNextButton.TextContent);
 
+
 	this.CSSScene.add(
-//		this.Controls.VideoButton.Obj3DCSS,
-//		this.Controls.VKIDButton.Obj3DCSS,
 		this.Controls.FindNextButton.Obj3DCSS
 	);
 

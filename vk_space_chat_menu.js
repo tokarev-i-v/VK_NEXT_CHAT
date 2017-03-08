@@ -29,7 +29,7 @@ var _Menu = function (json_params)
 		CAMERA_PARAMETERS.NEAR, 
 		CAMERA_PARAMETERS.FAR
 	);
-	this.Camera.position.set(0,0,700);
+	this.Camera.position.set(0,-200,1200);
 
 	this.Material = new THREE.MeshBasicMaterial();
 	
@@ -40,13 +40,27 @@ var _Menu = function (json_params)
 	this.Renderer.setSize(CAMERA_PARAMETERS.SCREEN_WIDTH, CAMERA_PARAMETERS.SCREEN_HEIGHT);
 	this.Container.appendChild(this.Renderer.domElement);
 	
-	
+
+	this.createFlyingObjects();
+
+	var startexture = new THREE.ImageUtils.loadTexture("models/bg_1_1.png");
+	var ambientlight = new THREE.AmbientLight( 0xffffff, 5 );
+	this.Scene.add(ambientlight);
+
+	this.SkyBox = {};
+	this.SkyBox.Geometry = new THREE.BoxGeometry(10, 10, 10);
+	this.SkyBox.Geometry.scale(1000, 1000, 1000);
+	this.SkyBox.Material = new THREE.MeshStandardMaterial({map: startexture, side: THREE.DoubleSide});
+	this.SkyBox.Mesh = new THREE.Mesh(this.SkyBox.Geometry, this.SkyBox.Material);
+	this.Scene.add(this.SkyBox.Mesh);																						
+
+/*	
 	this.SkyBox = {};
 	this.SkyBox.Geometry = new THREE.BoxGeometry(10000, 10000, 10000);
 	this.SkyBox.Material = new THREE.MeshBasicMaterial({color: 0x9999ff, side: THREE.BackSide});
 	this.SkyBox.Mesh = new THREE.Mesh(this.SkyBox.Geometry, this.SkyBox.Material);
 	this.Scene.add(this.SkyBox.Mesh);
-	
+*/	
 	this.CSSRenderer = new THREE.CSS3DRenderer();
 	this.CSSRenderer.setSize(CAMERA_PARAMETERS.SCREEN_WIDTH, CAMERA_PARAMETERS.SCREEN_HEIGHT);
 	this.CSSRenderer.domElement.style.position = "absolute";
@@ -107,6 +121,68 @@ var _Menu = function (json_params)
 
 };
 
+_Menu.prototype.createFlyingObjects = function ()
+{
+	this.FlyingObjects = [];
+	for (var i=0; i<FLYING_OBJECTS.NEAREST_OBJECTS_COUNT; i++)
+	{
+		var el = new THREE.Mesh(
+				new THREE.BoxGeometry(50, 50, 50), 
+				new THREE.MeshStandardMaterial({color: 0xffffff*Math.random(), opacity: Math.random()*0.2+0.7, transparent: true})
+			);
+		el.position.y = FLYING_OBJECTS.FLYING_MIN_HEIGHT_START_POSITION*Math.random()-200;
+		el.position.z = FLYING_OBJECTS.FlYING_RADIUS*(Math.random()-1.5);
+		el.position.x = FLYING_OBJECTS.FlYING_RADIUS*(Math.random()*2-1);
+
+		this.FlyingObjects.push(el);
+		this.Scene.add(el);
+	}
+
+	for(var i=0; i < FLYING_OBJECTS.FARTHER_OBJECTS_COUNT; i++)
+	{
+		var el = new THREE.Mesh(
+				new THREE.SphereGeometry(10+Math.round(Math.random()*-3), 32, 32), 
+				new THREE.MeshStandardMaterial({color: 0xd2fff0, opacity: 0.9, transparent: true})
+			);
+		el.position.z = FLYING_OBJECTS.FLYING_MIN_HEIGHT_START_POSITION*Math.random()-400;
+		el.position.y = FLYING_OBJECTS.FARTHER_OBJECTS_DISTANCE + 100*(Math.random()-0.5);
+		el.position.x = FLYING_OBJECTS.FlYING_RADIUS*(Math.random()*2-1);
+
+		this.FlyingObjects.push(el);
+		this.Scene.add(el);
+	}
+};
+
+_Menu.prototype.controlFlyingObjects = function ()
+{
+	for(var i=0; i< FLYING_OBJECTS.NEAREST_OBJECTS_COUNT; i++)
+	{		
+		if(this.FlyingObjects[i].position.z >= FLYING_OBJECTS.FLYING_MAX_HEIGHT)
+		{
+			this.FlyingObjects[i].position.z = FLYING_OBJECTS.FLYING_MIN_HEIGHT_START_POSITION*Math.random()-900;
+			this.FlyingObjects[i].position.y = FLYING_OBJECTS.FlYING_RADIUS*(Math.random()-1.5);
+			this.FlyingObjects[i].position.x = FLYING_OBJECTS.FlYING_RADIUS*(Math.random()*2-1)*3;
+		} else
+		{
+			this.FlyingObjects[i].position.z += 5;
+		}
+	}
+
+	for(var i= FLYING_OBJECTS.NEAREST_OBJECTS_COUNT; i<(FLYING_OBJECTS.NEAREST_OBJECTS_COUNT+FLYING_OBJECTS.FARTHER_OBJECTS_COUNT); i++)
+	{		
+		if(this.FlyingObjects[i].position.z >= FLYING_OBJECTS.FARTHER_FLYING_MAX_HEIGHT)
+		{
+			this.FlyingObjects[i].position.z = FLYING_OBJECTS.FLYING_MIN_HEIGHT_START_POSITION*Math.random()-900;
+			this.FlyingObjects[i].position.y = FLYING_OBJECTS.FARTHER_OBJECTS_DISTANCE + 300*(Math.random()-0.5);
+			this.FlyingObjects[i].position.x = FLYING_OBJECTS.FlYING_RADIUS*(Math.random()*2-1)*3;
+		} else
+		{
+			this.FlyingObjects[i].position.z += 3;
+		}
+	}	
+};
+
+
 _Menu.prototype.onsuccess = function (streamp) {
 	this.Inputs.GreetingAndAccessAgreement.ObjHTML.innerHTML = "Можно начинать!";
 	this.CSSScene.add(this.Inputs.StartProgButton.Obj3DCSS);
@@ -149,13 +225,40 @@ _Menu.prototype.onConnectionOpen = function ()
 
 _Menu.prototype.update = function ()
 {
+	if(this.Camera.position.z > 700)
+	{
+		this.Camera.position.z -= 2;
+	}	
+	if(this.Camera.position.y < 0)
+	{
+		this.Camera.position.y += 2;		
+	}	
+	if(this.Camera.position.x < 0)
+	{
+		this.Camera.position.x -= 5;				
+	}
+/*
+	if(YouTubePlayer.getVolume() < 80)
+	{
+		YouTubePlayer.setVolume(YouTubePlayer.getVolume() + 1);
+	}
+*/
+	this.controlFlyingObjects();
 	this.Renderer.render(this.Scene, this.Camera);
 	this.CSSRenderer.render(this.CSSScene, this.Camera);
 	
 	this.Inputs.StartProgButton.Obj3DCSS.rotation.y += 0.005;
+	if(this.Inputs.StartProgButton.Obj3DCSS.rotation.y >= 1.57)
+	{
+		this.Inputs.StartProgButton.Obj3DCSS.rotation.y = -this.Inputs.StartProgButton.Obj3DCSS.rotation.y;	
+	}
 	
 	if(this.updating === true)
 		requestAnimationFrame(this.updateBF);
+	else
+	{
+		delete this.FlyingObjects;
+	}
 };
 /*Инициализация при многокомнатном режиме*/
 _Menu.prototype.initMultiRoomMode = function ()

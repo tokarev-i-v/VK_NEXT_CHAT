@@ -101,7 +101,10 @@ var _VisualKeeper = function (json_params)
 _VisualKeeper.prototype.comeAwayToRight = function ()
 {
 
-	if(this.VideoMesh.Mesh.position.x <= VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.x)
+	if(Math.abs(this.VideoMesh.Mesh.position.x - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.x) <= 2 &&
+		Math.abs(this.VideoMesh.Mesh.position.y - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.y) <= 2 &&
+		Math.abs(this.VideoMesh.Mesh.position.z - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.z) <= 2
+		)
 	{
 		for(var i=0; i<ForUpdating.length; i++)
 		{
@@ -110,22 +113,41 @@ _VisualKeeper.prototype.comeAwayToRight = function ()
 				ForUpdating.splice(i, 1);
 				this.VideoMesh.Mesh.position.copy(VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY);
 				this.VideoMesh.Mesh.rotation.set(0,0,0);
-//				ForUpdating.push(this.comeToCenterFromLeftBF);
 				this.MovementStatus = VIDEO_MESH_MOVEMENT.STATUS.STANDING;
-				this.Video.pause();
+				this.VideoMesh.Case.material.opacity = 0.2;
+				this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
+
 			}
 		}
 	} else
 	{
-		this.VideoMesh.Mesh.position.x -= 3.5;
+		if(Math.abs(this.VideoMesh.Mesh.position.x - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.x) > 2)
+		{
+			this.VideoMesh.Mesh.position.x += (VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.x - this.VideoMesh.Mesh.position.x) / 
+			VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.MOVING_STEP;
+		}
+		if(Math.abs(this.VideoMesh.Mesh.position.y - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.y) > 2)
+		{
+			this.VideoMesh.Mesh.position.y += (VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.y - this.VideoMesh.Mesh.position.y) / 
+			VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.MOVING_STEP;
+		}
+		if(Math.abs(this.VideoMesh.Mesh.position.z - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.z) > 2)
+		{
+			this.VideoMesh.Mesh.position.z += (VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY.z - this.VideoMesh.Mesh.position.z) / 
+			VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.MOVING_STEP;		
+		}
 	}
+	this.VideoMesh.Case.material.opacity += 0.003;
+	this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
+
 };
 
 _VisualKeeper.prototype.comeToLocalUserVideoMeshPositionFromRight = function ()
 {
-
-
-	if(this.VideoMesh.Mesh.position.x >= VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.x)
+	if(Math.abs(this.VideoMesh.Mesh.position.x - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.x) <= 2 &&
+		Math.abs(this.VideoMesh.Mesh.position.y - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.y) <= 2 &&
+		Math.abs(this.VideoMesh.Mesh.position.z - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.z) <= 2
+		)
 	{
 		for(var i=0; i<ForUpdating.length; i++)
 		{
@@ -136,12 +158,32 @@ _VisualKeeper.prototype.comeToLocalUserVideoMeshPositionFromRight = function ()
 				this.VideoMesh.Mesh.rotation.set(0,0,0);
 
 				this.MovementStatus = VIDEO_MESH_MOVEMENT.STATUS.STANDING;
+				this.VideoMesh.Case.material.opacity = 0;
+				this.Scene.remove(this.VideoMesh.Case);
 			}
 		}
 	} else
 	{
-		this.VideoMesh.Mesh.position.x += 3.5;
+		if(Math.abs(this.VideoMesh.Mesh.position.x - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.x) > 2)
+		{
+			this.VideoMesh.Mesh.position.x += (VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.x - this.VideoMesh.Mesh.position.x) / 
+			VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.MOVING_STEP;
+		}
+		if(Math.abs(this.VideoMesh.Mesh.position.y - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.y) > 2)
+		{
+			this.VideoMesh.Mesh.position.y += (VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.y - this.VideoMesh.Mesh.position.y) / 
+			VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.MOVING_STEP;
+		}
+		if(Math.abs(this.VideoMesh.Mesh.position.z - VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.z) > 2)
+		{
+			this.VideoMesh.Mesh.position.z += (VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.FRONT_OF_CAMERA.z - this.VideoMesh.Mesh.position.z) / 
+			VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.MOVING_STEP;
+		}
 	}
+	this.VideoMesh.Case.material.opacity -= 0.003;
+	this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
+
+
 };
 
 _VisualKeeper.prototype.comeAwayToLeft = function ()
@@ -181,10 +223,7 @@ _VisualKeeper.prototype.comeToCenterFromLeft = function ()
 	} else
 	{
 		this.VideoMesh.Mesh.position.x -= 6;
-		if(this.UserType === USER_TYPES.REMOTE)
-		{
-			this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
-		}
+		this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
 
 	}
 };
@@ -199,18 +238,14 @@ _VisualKeeper.prototype.comeToCamera = function ()
 				ForUpdating.splice(i, 1);
 				this.VideoMesh.Mesh.position.copy(VIDEO_MESH_MOVEMENT.POSITIONS.REMOTE.FRONT_OF_CAMERA);
 				this.MovementStatus = VIDEO_MESH_MOVEMENT.STATUS.STANDING;
-				if(this.UserType === USER_TYPES.REMOTE)
-					this.Scene.remove(this.VideoMesh.Case);
+				this.Scene.remove(this.VideoMesh.Case);
 			}
 		}
 	} else
 	{
 		this.VideoMesh.Mesh.position.z += 8;
-		if(this.UserType === USER_TYPES.REMOTE)
-		{
-			this.VideoMesh.Case.material.opacity -= 0.005;
-			this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
-		}
+		this.VideoMesh.Case.material.opacity -= 0.005;
+		this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
 	}
 };
 
@@ -287,6 +322,13 @@ _VisualKeeper.prototype.setVideoTextureByStream = function (stream)
 		);
 		this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
 		this.Scene.add(this.VideoMesh.Case);
+	} else
+	{
+		this.VideoMesh.Case = new THREE.Mesh(
+			new THREE.BoxGeometry(150, 150, 150), 
+			new THREE.MeshStandardMaterial({color: 0xffffff*Math.random(), opacity: 0, transparent: true})
+		);
+		this.VideoMesh.Case.position.copy(this.VideoMesh.Mesh.position);
 	}
 };
 /*
@@ -296,21 +338,13 @@ _VisualKeeper.prototype.setTextureAndUpdateMesh = function (texture)
 {
 	this.Scene.remove(this.VideoMesh.Mesh);	
 	var temp_mesh = this.VideoMesh.Mesh;
-	if(this.UserType == USER_TYPES.LOCAL)
-	{
-		this.VideoMesh.Material = new THREE.MeshBasicMaterial({
-			map: texture, 
-			overdraw: true, 
-			side:THREE.DoubleSide
-		});
-	}else if(this.UserType == USER_TYPES.REMOTE)
-	{
-		this.VideoMesh.Material = new THREE.MeshBasicMaterial({ 
-			map: texture, 
-			overdraw: true, 
-			side:THREE.DoubleSide
-		});
-	}
+	
+	this.VideoMesh.Material = new THREE.MeshBasicMaterial({
+		map: texture, 
+		overdraw: true, 
+		side:THREE.DoubleSide
+	});
+	
 	this.VideoMesh.Mesh = new THREE.Mesh(this.VideoMesh.Geometry, this.VideoMesh.Material);
 	this.VideoMesh.Mesh.position.copy(temp_mesh.position);
 	
@@ -325,6 +359,7 @@ _VisualKeeper.prototype.hideVideo = function ()
 
 		if(this.UserType === USER_TYPES.LOCAL)
 		{
+			this.Scene.add(this.VideoMesh.Case);
 			ForUpdating.push(this.comeAwayToRightBF);
 		}
 		else if(this.UserType === USER_TYPES.REMOTE)
@@ -341,7 +376,6 @@ _VisualKeeper.prototype.showVideo = function ()
 		this.MovementStatus = VIDEO_MESH_MOVEMENT.STATUS.MOVEMENT;
 		if(this.UserType === USER_TYPES.LOCAL)
 		{
-			this.Video.play();
 			ForUpdating.push(this.comeToLocalUserVideoMeshPositionFromRightBF);
 		}
 		else if(this.UserType === USER_TYPES.REMOTE)

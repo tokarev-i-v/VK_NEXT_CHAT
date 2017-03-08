@@ -10,7 +10,7 @@
 }
 #start_button{
 	height: 100px;
-	width: 400px;
+	width: 300px;
 	font-size: 50px;
 }
 
@@ -109,34 +109,19 @@
 
 }
 
-/*Стиль 3DCSS кнопки контроля показа видео пользователя!*/
-#VideoButton3DCSS{
-	width: 70px;
-	height: 50px;
-	background-color: red;
-}
-#VideoButton3DCSS:hover {
-	background-color: white;
-	transition: background-color 1s;
-}
-
-/*Стиль 3DCSS кнопки контроля показа VKID пользователя!*/
-#VKIDButton3DCSS{
-	width: 70px;
-	height: 50px;
-	background-color: blue;
-}
-#VKIDButton3DCSS:hover{
-	background-color: white;
-	transition: background-color 1s;
-}
 /*Стиль 3DCSS кнопки контроля поиска следующего собеседника!*/
 #FindNextButton3DCSS{
-	width: 70px;
-	height: 50px;
-	background-color: yellow;
-	font: 30px Verdana;
+	width: auto;
+	height: auto;
 
+	background-color: yellow;
+	font-size: 40px;	
+	font-family: 'Lobster', cursive;
+	font-color: white;
+
+	padding: 2px 2px 2px 2px;
+	border: 2px solid white;
+	cursor: pointer;
 }
 #FindNextButton3DCSS:hover{
 	background-color: white;

@@ -432,16 +432,22 @@ _LocalUser.prototype.update = function ()
 				this.VisualKeeper.getVideoMesh().position.equals(VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY) &&
 				this.AllUsers[1][0].VisualKeeper.getVideoMesh().position.equals(VIDEO_MESH_MOVEMENT.POSITIONS.REMOTE.FRONT_OF_CAMERA)
 			){
-//				alert("OK");
 				this.UserStatus = USER_STATUS.ALL_FINE;
 			}
 		break;
 
 		case USER_STATUS.ALL_FINE:
-			console.log("all fine");
 		break;
 
 		case USER_STATUS.FINDING_REMOTE_USER:
+		break;
+
+		case USER_STATUS.NEED_WAIT_ANIMATION_ENDING_TO_DISCONNECT:
+			if(!this.NeedWaitAnimationEnding())
+			{
+				this.resetMeForWaiting();
+				this.AllUsers[1][0].resetMeForWaiting();
+			}
 		break;
 
 		case USER_STATUS.CANDIDATE_IS_FOUND_AND_CONNECTION_IS_BEEN_SET:
@@ -792,8 +798,14 @@ _LocalUser.prototype.onRecievedDataConnectionData = function (json_params)
 };
 _LocalUser.prototype.onRecievedDataConnectionClose = function()
 {
-	this.resetMeForWaiting();
-	this.AllUsers[1][0].resetMeForWaiting();
+	if(this.NeedWaitAnimationEnding())
+	{
+		this.UserStatus = USER_STATUS.NEED_WAIT_ANIMATION_ENDING_TO_DISCONNECT;
+	} else
+	{
+		this.resetMeForWaiting();
+		this.AllUsers[1][0].resetMeForWaiting();
+	}
 };
 
 _LocalUser.prototype.onRecievedDataConnectionError = function(error)
@@ -828,15 +840,31 @@ _LocalUser.prototype.onOpenDataConnection = function()
  */
 _LocalUser.prototype.disconnect = function()
 {
-
-	this.resetMeForWaiting();
-	this.AllUsers[1][0].resetMeForWaiting();
+	if(this.NeedWaitAnimationEnding())
+	{
+		this.UserStatus = USER_STATUS.NEED_WAIT_ANIMATION_ENDING_TO_DISCONNECT;
+	} else
+	{
+		this.resetMeForWaiting();
+		this.AllUsers[1][0].resetMeForWaiting();
+	}
+};
+/*Если нам нужно ждать окончания анимации*/
+_LocalUser.prototype.NeedWaitAnimationEnding = function ()
+{
+	if(this.VisualKeeper.getMovementStatus() === VIDEO_MESH_MOVEMENT.STATUS.STANDING &&
+		this.AllUsers[1][0].VisualKeeper.getMovementStatus() === VIDEO_MESH_MOVEMENT.STATUS.STANDING &&
+		this.VisualKeeper.getVideoMesh().position.equals(VIDEO_MESH_MOVEMENT.POSITIONS.LOCAL.RIGHT_AWAY) &&
+		this.AllUsers[1][0].VisualKeeper.getVideoMesh().position.equals(VIDEO_MESH_MOVEMENT.POSITIONS.REMOTE.FRONT_OF_CAMERA)
+	){
+		return false;
+	} else
+		return true;
 
 };
 
 _LocalUser.prototype.onDataConnectionError = function(error)
 {
-	alert(error);
 	this.disconnect();
 };
 

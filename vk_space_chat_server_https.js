@@ -12,6 +12,18 @@ var credentials = {
 	cert: fs.readFileSync("/etc/apache2/ssl/www_polyzer_org/www_polyzer_org.crt")	
 };
 
+var util = require('util');
+var logFile = fs.createWriteStream('log.txt', { flags: 'a' });
+  // Or 'w' to truncate the file every time the process starts.
+var logStdout = process.stdout;
+
+console.log = function () {
+  logFile.write(util.format.apply(null, arguments) + '\n');
+//   logStdout.write(util.format.apply(null, arguments) + '\n');
+}
+console.error = console.log;
+
+
 var RETURN_NOTHING = "0";
 var ACCESS_CONTROL_ALLOW_ORIGIN = "https://www.polyzer.org";
 var ACCESS_CONTROL_ALLOW_HEADERS = "Origin, X-Requested-With, Content-Type, Accept";
@@ -175,7 +187,7 @@ function SingleRoom_findCompanion(req, res)
 	res.header("Access-Control-Allow-Origin", ACCESS_CONTROL_ALLOW_ORIGIN);
 	res.header("Access-Control-Allow-Headers", ACCESS_CONTROL_ALLOW_HEADERS);  
 
-	console.log(req.body.user_id);
+//	console.log(req.body.user_id);
 	for(var i=0; i< UndecidedArrays[0].length; i++)
 	{
 		if(UndecidedArrays[0][i] === req.body.user_id)
